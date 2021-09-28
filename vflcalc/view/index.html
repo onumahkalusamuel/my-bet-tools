@@ -1,0 +1,52 @@
+<html>
+	<head>
+		<script tpye="text/javascript" src="jquery.js"></script>
+		<link rel="stylesheet" type="text/css" href="bootstrap.css"/>
+	</head>
+	<body>
+		<div id="header">
+			
+		</div>
+		<div id="content"></div>
+			<div id="infoDiv">
+				<table class="infoTop" border="1"cellspacing="5px"><tbody id="infoTop"></tbody></table>
+			</div>
+			<br/>
+			<div id="mainFormDiv">
+				<table class="table" border="1"cellspacing="5px">
+					<thead>
+						<th>SerialNo </th>
+						<th>Odd </th>
+						<th>Stake </th>
+						<th>Win/Lose</th>
+						<th>Outcome</th>
+					</thead>
+					<tbody id="mainForm"></tbody>
+				</table>
+			</div>
+		<div id="footer"></div>
+
+		<!--Here contains all of the javascript needed for the calculation-->
+		<script tpye="text/javascript" src="formDetails.js"></script>
+		<script tpye="text/javascript" src="../controller/calculator.js"></script>
+		<script>
+			//populate the top form
+			loadFormTop();
+			
+			//populate the main form
+			loadForm();
+
+			$outcome = $("#outcome");
+			$outcome.on('change', function(){
+				myValue = $outcome.val();
+				if (myValue=="Win") {
+
+				} else if(myValue=="Lose") {
+					loadForm();
+
+				}
+			});
+
+		</script>
+	</body>
+</html>
