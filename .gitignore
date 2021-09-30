@@ -1,0 +1,15 @@
+tmp/
+vendor/
+.idea/
+!public/
+public/error_log
+node_modules/
+
+smarty/*
+!smarty/config/
+!smarty/cache/
+smarty/cache/*
+!smarty/cache/index.php
+!smarty/tmpl_c/
+smarty/tmpl_c/*
+!smarty/tmpl_c/index.php

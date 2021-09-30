@@ -1,80 +1,82 @@
 <html>
-	<head>
-		<script tpye="text/javascript" src="view/jquery.js"></script>
-		<script tpye="text/javascript" src="model/jquery.savefile.js"></script>
-		<link rel="stylesheet" type="text/css" href="view/bootstrap.css"/>
-	</head>
-	<body>
-		<div id="header">
-			
-		</div>
-		<div id="content"></div>
-			<div id="infoDiv">
-				<table class="infoTop" border="1"cellspacing="5px">
-					<thead>Form Details</thead>
-					<tbody id="infoTop"></tbody>
-				</table>
-			</div>
-			<br/>
-			<div id="mainFormDiv">
-				<table class="table" border="1"cellspacing="5px">
-					<thead>
-						<th>SerialNo </th>
-						<th>Odd </th>
-						<th>Stake </th>
-						<th>Win/Lose</th>
-						<th>Outcome</th>
-					</thead>
-					<tbody id="mainForm"></tbody>
-				</table>
-			</div>
-		<div id="footer"></div>
 
-		<!--Here contains all of the javascript needed for the calculation-->
-		<script tpye="text/javascript" src="view/formDetails.js"></script>
-		<script tpye="text/javascript" src="model/save.js"></script>
-		<script type="text/javascript" src="controller/calculator.js"></script>
-		<script>
-			//populate the top form
-			loadFormTop();
+<head>
+    <base href="{$basePath}/" />
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.css" />
+    <title>Rollover Trading</title>
+</head>
 
-			//well, we can call this serial no
-			var num = 1;
-			
-			//populate the first row of the main form
-			loadForm(num);
+<body>
+    <div id="header">
 
-			//we need to serialize first, lols
-			serialNo();
+    </div>
+    <div id="content"></div>
+    <div id="infoDiv">
+        <table class="infoTop" border="1" cellspacing="5px">
+            <thead>Form Details</thead>
+            <tbody id="infoTop"></tbody>
+        </table>
+    </div>
+    <br/>
+    <div id="mainFormDiv">
+        <table class="table" border="1" cellspacing="5px">
+            <thead>
+                <th>SerialNo </th>
+                <th>Odd </th>
+                <th>Stake </th>
+                <th>Win/Lose</th>
+                <th>Outcome</th>
+            </thead>
+            <tbody id="mainForm"></tbody>
+        </table>
+    </div>
+    <div id="footer"></div>
 
-			function check() {
-				return	confirm('Are you Sure?');
-			}
+    <!--Here contains all of the javascript needed for the calculation-->
+    <script tpye="text/javascript" src="formDetails.js"></script>
+    <script type="text/javascript" src="calculator.js"></script>
+    <script>
+        //populate the top form
+        loadFormTop();
 
-			//the main caller
-			$(document).on('change', '.outcome', function(){
-				var myValue = $(this).val();
-				var dataRow = $(this).attr('data-row');
-				if(myValue=="Win") {
-					if(check()){
-						$("#"+dataRow).prop('disabled',true);
-						$(this).prop('disabled',true);
-						saveBtn();
-					}
-				} else if(myValue=="Lose") {
-					if(check()){
-						loadForm(num);
-						serialNo();
-						$("#"+dataRow).prop('disabled',true);
-						$(this).prop('disabled',true);
-					}
+        //well, we can call this serial no
+        var num = 1;
 
-				}
-			});
-			
-			$(document).keyup('#row'+(num-1), function() {
-				calculateStake();
-			});
-		</script>
-	</body>
+        //populate the first row of the main form
+        loadForm(num);
+
+        //we need to serialize first, lols
+        serialNo();
+
+        function check() {
+            return confirm('Are you Sure?');
+        }
+
+        //the main caller
+        $(document).on('change', '.outcome', function() {
+            var myValue = $(this).val();
+            var dataRow = $(this).attr('data-row');
+            if (myValue == "Win") {
+                if (check()) {
+                    $("#" + dataRow).prop('disabled', true);
+                    $(this).prop('disabled', true);
+                    saveBtn();
+                }
+            } else if (myValue == "Lose") {
+                if (check()) {
+                    loadForm(num);
+                    serialNo();
+                    $("#" + dataRow).prop('disabled', true);
+                    $(this).prop('disabled', true);
+                }
+
+            }
+        });
+
+        $(document).keyup('#row' + (num - 1), function() {
+            calculateStake();
+        });
+    </script>
+</body>
+
 </html>
