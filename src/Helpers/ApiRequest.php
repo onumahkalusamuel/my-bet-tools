@@ -25,7 +25,7 @@ class ApiRequest
         }
     }
 
-    public function getUrl(string $url)
+    public function get(string $url)
     {
         try {
             $response = $this->client->get($url);

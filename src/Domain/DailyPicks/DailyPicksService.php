@@ -1,41 +1,36 @@
 <?php
 
-namespace App\Domain\DailyGames;
+namespace App\Domain\DailyPicks;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use App\Helpers\ApiRequest;
-use Psr\Container\ContainerInterface;
 
 class DailyGamesService
 {
     private $apiRequest;
-    private $tempDir;
+    private $repository;
+    private $gamesUrl = "";
 
-    public function __construct(ContainerInterface $container, ApiRequest $apiRequest)
+    public function __construct(DailyPicksRepository $repository, ApiRequest $apiRequest)
     {
         $this->apiRequest = $apiRequest;
-        $this->tempDir = $container->get('settings')['temp'];
+	$this->repository = $repository;
     }
 
     public function getGames(
-        ServerRequestInterface $request,
-        ResponseInterface $response,
-        $args
     ) {
-        echo "<pre>";
-        print_r($this->processGames());
-        return $response;
+
     }
 
-    public function processGames()
+    public function fetchNewGames()
     {
         $output = [
             'outright' => [],
             'double_chance' => [],
         ];
 
-        $g = json_decode(file_get_contents($this->tempDir . '/GetEventsInDailyBundleV3.json'), true);
+        $g = json_decode($this->apiRequest->get($this->gamesUrl)), true);
         if ($g['R'] !== 'OK') return $output;
         $data = $g['D'];
 

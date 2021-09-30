@@ -25,6 +25,7 @@ class DailyPicks
     ) {
 
         $games = $this->games->processGames();
+	print_r($games);
 
         // fetch the page
         try {
