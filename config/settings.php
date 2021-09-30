@@ -33,10 +33,10 @@ $settings['error'] = [
     'log_error_details' => true,
 ];
 
-$dbHost = '';
-$dbUser = '';
-$dbName = '';
-$dbPass = '';
+$dbHost = 'localhost';
+$dbUser = 'root';
+$dbName = 'my_bet_tools';
+$dbPass = 'root';
 
 // Database settings
 $settings['db'] = [
@@ -61,6 +61,32 @@ $settings['db'] = [
     ],
 ];
 
+// phoenix
+$settings['phoenix'] = [
+    'migration_dirs' => [
+        'first' => __DIR__ . '/../resources/migrations',
+    ],
+    'environments' => [
+        'local' => [
+            'adapter' => 'mysql',
+            'host' => $dbHost,
+            'username' => $dbUser,
+            'password' => $dbPass,
+            'db_name' => $dbName,
+            'charset' => 'utf8',
+        ],
+        'production' => [
+            'adapter' => 'mysql',
+            'host' => $dbHost,
+            'username' => $dbUser,
+            'password' => $dbPass,
+            'db_name' => $dbName,
+            'charset' => 'utf8',
+        ],
+    ],
+    'default_environment' => 'local',
+    'log_table_name' => 'phoenix_log',
+];
 // email settings
 $settings['smtp'] = [
     'email' => '',

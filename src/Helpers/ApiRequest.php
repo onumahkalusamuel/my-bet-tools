@@ -25,7 +25,7 @@ class ApiRequest
         }
     }
 
-    public function get(string $url)
+    public function getFullText(string $url)
     {
         try {
             $response = $this->client->get($url);

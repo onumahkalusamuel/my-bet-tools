@@ -2,46 +2,64 @@
 
 namespace App\Domain\DailyPicks;
 
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
 use App\Helpers\ApiRequest;
+use App\Domain\DailyPicks\DailyPicksRepository;
 
-class DailyGamesService
+class DailyPicksService
 {
     private $apiRequest;
     private $repository;
-    private $gamesUrl = "";
+    private $gamesUrl = "https://sports.bet9ja.com/desktop/feapi/PalimpsestAjax/GetEventsInDailyBundleV3?DISP=1000&DISPH=0&SPORTID=1";
 
     public function __construct(DailyPicksRepository $repository, ApiRequest $apiRequest)
     {
         $this->apiRequest = $apiRequest;
-	$this->repository = $repository;
+        $this->repository = $repository;
     }
 
-    public function getGames(
-    ) {
+    public function getGames($date = null)
+    {
+        if (empty($date) || !\Carbon\Carbon::hasFormat($date, 'Y-m-d')) {
+            $date = date('Y-m-d');
+        }
 
+        if (empty($this->getGamesFromDb($date))) {
+            $this->processNewGames();
+        }
+
+        return $this->getGamesFromDb($date);
     }
 
-    public function fetchNewGames()
+    public function getGamesFromDb($date)
+    {
+        return $this->repository->readAll([
+            'params' => [
+                'where' => ['date' => $date]
+            ]
+        ]);
+    }
+
+    public function processNewGames(): void
     {
         $output = [
             'outright' => [],
             'double_chance' => [],
         ];
 
-        $g = json_decode($this->apiRequest->get($this->gamesUrl)), true);
-        if ($g['R'] !== 'OK') return $output;
+        $g = json_decode($this->apiRequest->getFullText($this->gamesUrl), true);
+
+        if ($g['R'] !== 'OK') return;
         $data = $g['D'];
 
         $groups = $data['G'];
         $events = $data['E'];
 
-        if (!count($events)) return $output;
+        if (!count($events)) return;
 
         shuffle($events);
 
-        $refTime = time() + (6 * 3600);
+        // $refTime = time() + (6 * 3600);
+        $refTime = time() + (6 * 360);
 
         foreach ($events as $event) {
 
@@ -50,7 +68,7 @@ class DailyGamesService
             if (empty($event['O']['S_1X2_2'])) continue;
 
             $game = [];
-            $game['id'] = $event['ID'];
+            $game['game_id'] = $event['ID'];
             $game['code'] = $event['C'];
             $game['title'] = $event['N'];
             $game['date'] = explode(" ", $event['D'])[0];
@@ -59,6 +77,8 @@ class DailyGamesService
             $game['choice'] = '';
             $game['odds'] = 0;
             $game['market'] = '';
+            $game['type'] = '';
+            $game['acc_group'] = '';
 
             $o = $event['O'];
             // check for outrights
@@ -68,6 +88,7 @@ class DailyGamesService
                     $game['choice'] = '2';
                     $game['odds'] = $o['S_1X2_2'];
                     $game['market'] = '1X2';
+                    $game['type'] = 'outright';
                     $output['outright'][] = $game;
                 }
             } else {
@@ -76,6 +97,7 @@ class DailyGamesService
                     $game['choice'] = '1';
                     $game['odds'] = $o['S_1X2_1'];
                     $game['market'] = '1X2';
+                    $game['type'] = 'outright';
                     $output['outright'][] = $game;
                 }
             }
@@ -92,6 +114,7 @@ class DailyGamesService
                     $game['choice'] = '2X';
                     $game['odds'] = $o['S_DC_2X'];
                     $game['market'] = 'DC';
+                    $game['type'] = 'double_chance';
                     $output['double_chance'][] = $game;
                 }
             } else {
@@ -104,11 +127,36 @@ class DailyGamesService
                     $game['choice'] = '1X';
                     $game['odds'] = $o['S_DC_1X'];
                     $game['market'] = 'DC';
+                    $game['type'] = 'double_chance';
                     $output['double_chance'][] = $game;
                 }
             }
         }
 
-        return $output;
+        $acc = '';
+
+        if (!empty($output['outright'])) {
+            shuffle($output['outright']);
+            foreach ($output['outright'] as $key => $game) {
+                if ($key % 3 === 0) {
+                    $acc = uniqid($key);
+                }
+                $game['acc_group'] = $acc;
+                $this->repository->create(['data' => $game]);
+            }
+        }
+
+        if (!empty($output['double_chance'])) {
+            shuffle($output['double_chance']);
+            foreach ($output['double_chance'] as $key => $game) {
+                if ($key % 3 === 0) {
+                    $acc = uniqid($key);
+                }
+                $game['acc_group'] = $acc;
+                $this->repository->create(['data' => $game]);
+            }
+        }
+
+        return;
     }
 }

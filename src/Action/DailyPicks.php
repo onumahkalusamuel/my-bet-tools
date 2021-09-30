@@ -5,14 +5,14 @@ namespace App\Action;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Smarty;
-use App\Domain\DailyGames\DailyGamesService;
+use App\Domain\DailyPicks\DailyPicksService;
 
 class DailyPicks
 {
     private $view;
     private $games;
 
-    public function __construct(Smarty $view, DailyGamesService $games)
+    public function __construct(Smarty $view, DailyPicksService $games)
     {
         $this->view = $view;
         $this->games = $games;
@@ -24,17 +24,15 @@ class DailyPicks
         $args
     ) {
 
-        $games = $this->games->processGames();
-	print_r($games);
+        $games = $this->games->getGames();
 
         // fetch the page
         try {
             $this->view->assign('page', 'daily-picks');
             $this->view->assign('games', $games);
-            $header = $this->view->fetch("public/header.tpl");
-            $body = $this->view->fetch("public/daily-picks.tpl");
-            $footer = $this->view->fetch("public/footer.tpl");
-            echo $header . $body . $footer;
+            $this->view->display("public/header.tpl");
+            $this->view->display("public/daily-picks.tpl");
+            $this->view->display("public/footer.tpl");
         } catch (\Exception $e) {
             $this->view->display("404.tpl");
         }
