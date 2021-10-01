@@ -30,6 +30,16 @@ class DailyPicksService
         return $this->getGamesFromDb($date);
     }
 
+    public function picksHistoryDates()
+    {
+        return $this->repository->readAll([
+            'select' => ['date'],
+            'group_by' => ['date'],
+            'order_by' => 'date',
+            'order' => 'DESC'
+        ]);
+    }
+
     public function getGamesFromDb($date)
     {
         return $this->repository->readAll([
@@ -58,8 +68,8 @@ class DailyPicksService
 
         shuffle($events);
 
-        // $refTime = time() + (6 * 3600);
-        $refTime = time() + (6 * 360);
+        $refTime = time() + (6 * 3600);
+        // $refTime = time() + (6 * 360);
 
         foreach ($events as $event) {
 
@@ -134,29 +144,53 @@ class DailyPicksService
         }
 
         $acc = '';
+        $acc_count = 0;
 
         if (!empty($output['outright'])) {
             shuffle($output['outright']);
             foreach ($output['outright'] as $key => $game) {
                 if ($key % 3 === 0) {
                     $acc = uniqid($key);
+                    $acc_count++;
                 }
+                if ($acc_count === 5) break;
                 $game['acc_group'] = $acc;
                 $this->repository->create(['data' => $game]);
             }
         }
 
+        $acc_count = 0;
         if (!empty($output['double_chance'])) {
             shuffle($output['double_chance']);
             foreach ($output['double_chance'] as $key => $game) {
                 if ($key % 3 === 0) {
                     $acc = uniqid($key);
+                    $acc_count++;
                 }
+                if ($acc_count === 5) break;
                 $game['acc_group'] = $acc;
                 $this->repository->create(['data' => $game]);
             }
         }
 
         return;
+    }
+
+    public function prepareGamesForDisplay(array $games = []): array
+    {
+        $output = [];
+
+        if (empty($games)) return $output;
+
+        foreach ($games as $game) {
+            $output[$game['type']][$game['acc_group']]['games'][] = $game;
+            $output[$game['type']][$game['acc_group']]['date'] = $game['date'];
+            if (empty($output[$game['type']][$game['acc_group']]['total_odds'])) {
+                $output[$game['type']][$game['acc_group']]['total_odds'] = 1;
+            }
+            $output[$game['type']][$game['acc_group']]['total_odds'] *= $game['odds'];
+        }
+
+        return $output;
     }
 }

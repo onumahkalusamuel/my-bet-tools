@@ -37,7 +37,7 @@ class Repository
     /**
      * Constructor.
      *
-     * @param PDO $connection The database connection
+     * @param Illuminate\Database\Connection $connection The database connection
      */
     public function __construct(Connection $connection)
     {
@@ -62,10 +62,10 @@ class Repository
     /**
      * readSingle
      *
-     * @param $props
-     * @return object
+     * @param array $props
+     * @return array
      */
-    public function readSingle(array $props): object
+    public function readSingle(array $props): array
     {
         [
             'ID' => $id,
@@ -76,13 +76,13 @@ class Repository
 
         if (!empty($select)) $__->select($select);
 
-        return (object) $__->find($id);
+        return (array) $__->find($id);
     }
 
     /**
      * readPaging
      *
-     * @param $props
+     * @param array $props
      * @return array
      */
     public function readPaging(array $props): array
@@ -156,7 +156,11 @@ class Repository
             $__->take($filters['rpp']);
         }
 
-        $return['data'] = $__->get()->all();
+        $return['data'] = array_map(function ($value) {
+            return (array)$value;
+        }, $__->get()->all());
+
+        // $return['data'] = $__->get()->all();
 
         // finally return
         return $return;
@@ -165,7 +169,7 @@ class Repository
     /**
      * readAll
      *
-     * @param $props
+     * @param array $props
      * @return array
      */
     public function readAll(array $props): array
@@ -218,16 +222,60 @@ class Repository
         // ordering
         $__->orderBy($order_by, $order);
 
-        return (array)$__->get()->all();
+        return (array) array_map(function ($value) {
+            return (array)$value;
+        }, $__->get()->all());
+    }
+
+    /**
+     * totalRows
+     *
+     * @param array $props
+     * @return int
+     */
+    public function totalRows(array $props = []): int
+    {
+        [
+            'params' => $params
+        ] = $props + $this->CHILD_DEFAULTS + self::DEFAULTS;
+
+        $__ = $this->connection->table($this->table);
+
+        // where like
+        if (!empty($params['like'])) {
+
+            $__->where(function ($q) use ($params) {
+
+                $x = 0;
+
+                foreach ($params['like'] as $key => $value) {
+                    // check for multiple entries in one, separated by pipe (|)
+                    $values = explode("|", $value);
+                    foreach ($values as $v) {
+                        if ($x == 0) $q->where($key, 'LIKE', '%' . $v . '%');
+                        else $q->orWhere($key, 'LIKE', '%' . $v . '%');
+                        $x++;
+                    }
+                }
+            });
+        }
+
+        // where direct
+        if (!empty($params['where'])) {
+            $__->where($params['where']);
+        }
+
+        // finally return
+        return (int) $__->get()->count();
     }
 
     /**
      * find
      *
      * @param array $props
-     * @return object
+     * @return array
      */
-    public function find(array $props): object
+    public function find(array $props): array
     {
         [
             'params' => $params,
@@ -247,7 +295,7 @@ class Repository
         // where
         $__->where($params);
 
-        $return = (object) $__->get()->first();
+        $return = (array) $__->get()->first();
 
         return $return;
     }

@@ -1,0 +1,62 @@
+body {
+    padding: 20px;
+    background-color: #eee;
+    width: 980px;
+    margin-left: auto;
+    margin-right: auto;
+    min-height: 90vh;
+}
+
+main {
+    min-height: 70vh;
+}
+
+main,
+header,
+footer {
+    padding: 10px;
+    border: 1px solid #aaa;
+    background-color: #fff;
+}
+
+header {
+    border-bottom: none;
+}
+
+footer {
+    border-top: none;
+}
+
+input,
+select {
+    text-align: center;
+    border-radius: 0px !important;
+}
+
+.btn,
+textarea {
+    border-radius: 0px !important;
+}
+
+.games {
+    font-size: 0.9em;
+}
+
+.games td,
+.games th {
+    padding-top: 4px;
+    padding-bottom: 4px;
+}
+
+.games .text-win {
+    color: #28a745 !important;
+}
+
+.games .text-lose {
+    color: #dc3545 !important;
+}
+
+.games .text-cancelled,
+.games .text-postponed {
+    color: #6c757d !important;
+}

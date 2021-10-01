@@ -17,14 +17,18 @@ return function (App $app) {
 
         $group->get('ref/{referralUserName}[/]', \App\Action\AffiliatesAction::class)->setName('ref');
 
-        $group->post('contact-us[/]', \App\Action\ContactUsAction::class)->setName('contact-us-form');
+        $group->get('contact-us[/]', \App\Action\ContactUs::class)->setName('contact-us');
+        $group->post('contact-us[/]', \App\Action\ContactUsSubmit::class)->setName('contact-us-submit');
 
+        $group->get('strategies[/]', \App\Action\Strategies::class)->setName('strategies');
+
+        $group->get('stake-calculator[/]', \App\Action\StakeCalculator::class)->setName('stake-calculator');
         $group->get('daily-picks[/]', \App\Action\DailyPicks::class)->setName('daily-picks');
+        $group->get('picks-history[/]', \App\Action\PicksHistory::class)->setName('picks-history');
+
 
         //catch-all page
         $group->get('page/{page}', \App\Action\PageView::class)->setName('page');
 
-        // crons
-        $group->get('crons/processgames', [\App\Domain\DailyGames\DailyGamesService::class, 'getGames'])->setName('page');
     });
 };

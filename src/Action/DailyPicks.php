@@ -24,7 +24,7 @@ class DailyPicks
         $args
     ) {
 
-        $games = $this->games->getGames();
+        $games = $this->games->prepareGamesForDisplay($this->games->getGames());
 
         // fetch the page
         try {

@@ -19,7 +19,7 @@ $settings['assets_dir'] = $settings['public'] . '/assets';
 
 // for smarty
 $settings['smarty'] = [
-    'template_dir' => $settings['root'] . '/templates/',
+    'template_dir' => $settings['root'] . '/resources/views/',
     'compile_dir' => $settings['root'] . '/smarty/tmpl_c/',
     'config_dir' => $settings['root'] . '/smarty/config/',
     'cache_dir' => $settings['root'] . '/smarty/cache/'
@@ -89,9 +89,9 @@ $settings['phoenix'] = [
 ];
 // email settings
 $settings['smtp'] = [
-    'email' => '',
-    'password' => '',
-    'name' => '',
+    'email' => 'info@onumahkalusamuel.tk',
+    'password' => 's6SFM-cB6qS)',
+    'name' => 'Admin',
     'host' => gethostname()
 ];
 

@@ -6,7 +6,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Smarty;
 
-class PageView
+class ContactUs
 {
     private $view;
 
@@ -21,14 +21,11 @@ class PageView
         $args
     ) {
 
-        // the page name
-        $page = $args['page'] ?? 'home';
-
         // fetch the page
         try {
-            $this->view->assign('page', $page);
+            $this->view->assign('page', 'contact-us');
             $header = $this->view->fetch("public/header.tpl");
-            $body = $this->view->fetch("public/pages/{$page}.tpl");
+            $body = $this->view->fetch("public/contact-us.tpl");
             $footer = $this->view->fetch("public/footer.tpl");
             echo $header . $body . $footer;
         } catch (\Exception $e) {

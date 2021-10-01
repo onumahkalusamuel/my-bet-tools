@@ -6,7 +6,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Smarty;
 
-class PageView
+class StakeCalculator
 {
     private $view;
 
@@ -21,19 +21,14 @@ class PageView
         $args
     ) {
 
-        // the page name
-        $page = $args['page'] ?? 'home';
-
         // fetch the page
         try {
-            $this->view->assign('page', $page);
-            $header = $this->view->fetch("public/header.tpl");
-            $body = $this->view->fetch("public/pages/{$page}.tpl");
-            $footer = $this->view->fetch("public/footer.tpl");
-            echo $header . $body . $footer;
+            $this->view->assign('page', 'stake-calculator');
+            $this->view->display("public/header.tpl");
+            $this->view->display("public/stake-calculator.tpl");
+            $this->view->display("public/footer.tpl");
         } catch (\Exception $e) {
-            $this->view->assign('error', $e->getMessage());
-            $this->view->display("500.tpl");
+            $this->view->display("404.tpl");
         }
         return $response;
     }
