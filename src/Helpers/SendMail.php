@@ -28,11 +28,11 @@ class SendMail
         $this->siteName = "my-bet-tools";
         $this->contactPhone = "";
         $this->contactAddress = "";
-        $this->contactEmail = "info@my-bet-tools.com";
+        $this->contactEmail = $smtp['email'];
         $this->siteUrl = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . '/';
 
         $mail = new PHPMailer(true);
-
+        
         if (gethostname() == 'localhost') {
             $mail->isMail();
         } else {
@@ -40,7 +40,8 @@ class SendMail
             $mail->SMTPAuth = true;
             $mail->Password = $smtp['password'];
             $mail->Username = $smtp['email'];
-            $mail->Host = gethostname();
+            $mail->Host = $smtp['host'];
+            $mail->Port = $smtp['port'];
         }
 
         $mail->setFrom($smtp['email'], $smtp['name']);
@@ -77,11 +78,11 @@ class SendMail
         $data['name'] = $this->contactName;
         $data['subject'] = "Contact Us: " . $form['subject'];
         $data['message'] =
-            "<strong>Feedback Form:<br/>" .
-            "<p><strong>Name:</strong> " . $form['name'] . "</p>" .
-            "<p><strong>Email:</strong> " . $form['email'] . "</p>" .
-            "<p><strong>Suject:</strong> " . $form['subject'] . "</p>" .
-            "<p><strong>Message:</strong> " . $form['message'] . "</p>";
+            "<strong>Feedback Form:</strong><br/><br/>" .
+            "<p><strong>Name:</strong><br/>" . $form['name'] . "</p>" .
+            "<p><strong>Email:</strong><br/>" . $form['email'] . "</p>" .
+            "<p><strong>Suject:</strong><br/>" . $form['subject'] . "</p>" .
+            "<p><strong>Message:</strong><br/>" . $form['message'] . "</p>";
 
         return $this->send($data);
     }

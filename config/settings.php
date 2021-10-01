@@ -92,7 +92,8 @@ $settings['smtp'] = [
     'email' => 'info@onumahkalusamuel.tk',
     'password' => 's6SFM-cB6qS)',
     'name' => 'Admin',
-    'host' => gethostname()
+    'host' => 'localhost',
+    'port' => 465
 ];
 
 // Session

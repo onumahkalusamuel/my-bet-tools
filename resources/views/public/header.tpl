@@ -3,6 +3,10 @@
 <head>
     <base href="{$basePath}/" />
     <title>{$page} : my-bet-tools</title>
+    <meta name="description" content="Get access to several tools that help you win at sports betting." />
+    <meta name="keywords"
+        content="my-bet-tools, betting, bet9ja,merrybet,betking,my bet tools,betting guide,vfl master,income,arbitrage">
+    <meta name="author" content="Onumah Kalu Samuel">
     <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
     <link rel="stylesheet" type="text/css" href="css/style.css" />
 </head>

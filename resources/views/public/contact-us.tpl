@@ -7,7 +7,7 @@
             <div class="br-0 border px-2 py-4">
                 <div class="bi bi-phone text-danger"></div>
                 <h4 class="font-weight-bold">Email</h4>
-                <a class="btn border border-dark" href="mailto:info@my-bet-tools.com">info@my-bet-tools.com</a>
+                <a class="btn border border-dark" href="mailto:info@onumahkalusamuel.tk">info@onumahkalusamuel.tk</a>
             </div>
         </div>
         <div class="col-6 pr-0 py-3">
